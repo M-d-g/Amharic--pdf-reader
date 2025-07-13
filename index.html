@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8">
+  <title>Amharic PDF to Audio</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f2f2f2; }
+    h1 { color: #333; }
+    #textOutput { white-space: pre-wrap; margin-top: 20px; background: white; padding: 10px; border: 1px solid #ccc; }
+    button { margin-top: 10px; padding: 10px 15px; }
+  </style>
+</head>
+<body>
+  <h1>📘 Amharic PDF to Audio 🔊</h1>
+  <input type="file" id="fileInput" accept=".pdf" />
+  <button onclick="speakText()">🔊 Read Aloud in Amharic</button>
+  <div id="textOutput">📄 Amharic text will appear here...</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const textOutput = document.getElementById('textOutput');
+    let pdfText = "";
+
+    fileInput.addEventListener('change', async function () {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const fileReader = new FileReader();
+      fileReader.onload = async function () {
+        const typedarray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+        let text = '';
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items.map(item => item.str).join(' ');
+          text += pageText + '\n\n';
+        }
+
+        pdfText = text;
+        textOutput.textContent = pdfText;
+      };
+
+      fileReader.readAsArrayBuffer(file);
+    });
+
+    function speakText() {
+      if (!pdfText) return alert("No text to read.");
+      const utterance = new SpeechSynthesisUtterance(pdfText);
+      utterance.lang = "am-ET"; // Amharic locale
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
