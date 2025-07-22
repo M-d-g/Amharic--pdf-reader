@@ -432,6 +432,118 @@
       border-top: 1px solid var(--border-color);
     }
 
+    /* New styles for settings panel */
+    .settings-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .settings-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .btn-close:hover {
+      color: var(--text-primary);
+    }
+
+    .settings-content .setting-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-content label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .settings-content .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      transition: border-color 0.2s ease;
+    }
+
+    .settings-content .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .settings-content .help-text {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .settings-content .help-text a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .settings-content .help-text a:hover {
+      text-decoration: underline;
+    }
+
+    .settings-content .radio-group {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .settings-content .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+    }
+
+    .settings-content .radio-label input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary-color);
+    }
+
+    .settings-content .setting-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+    }
+
     @media (max-width: 767px) {
       body {
         padding: 0.5rem;
@@ -473,6 +585,35 @@
 
       .volume-control {
         justify-content: center;
+      }
+
+      .settings-panel {
+        padding: 1rem;
+      }
+
+      .settings-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+
+      .settings-header h3 {
+        width: 100%;
+        text-align: center;
+      }
+
+      .settings-content .setting-group {
+        margin-bottom: 1rem;
+      }
+
+      .settings-content .radio-group {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .settings-content .setting-actions {
+        flex-direction: column;
+        gap: 0.75rem;
       }
     }
   </style>
@@ -561,6 +702,83 @@
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.1" value="1">
             <i class="fas fa-volume-up"></i>
           </div>
+          <button class="btn btn-secondary" id="settingsBtn">
+            <i class="fas fa-cog"></i>
+            TTS Settings
+          </button>
+        </div>
+
+        <!-- TTS Settings Panel -->
+        <div class="settings-panel" id="settingsPanel" style="display: none;">
+          <div class="settings-header">
+            <h3><i class="fas fa-cog"></i> Text-to-Speech Settings</h3>
+            <button class="btn-close" id="closeSettings">&times;</button>
+          </div>
+          
+          <div class="settings-content">
+            <div class="setting-group">
+              <label for="ttsProvider">TTS Provider:</label>
+              <select id="ttsProvider" class="form-control">
+                <option value="browser">Browser TTS (Free)</option>
+                <option value="azure">Azure Cognitive Services (Paid)</option>
+                <option value="google">Google Cloud TTS (Paid)</option>
+              </select>
+              <small class="help-text">Browser TTS may not support Amharic. Cloud services provide native Amharic voices.</small>
+            </div>
+
+            <div class="setting-group" id="azureSettings" style="display: none;">
+              <label for="azureApiKey">Azure API Key:</label>
+              <input type="password" id="azureApiKey" class="form-control" placeholder="Enter your Azure Speech Services API key">
+              
+              <label for="azureRegion">Azure Region:</label>
+              <select id="azureRegion" class="form-control">
+                <option value="eastus">East US</option>
+                <option value="westus">West US</option>
+                <option value="eastus2">East US 2</option>
+                <option value="westus2">West US 2</option>
+                <option value="westeurope">West Europe</option>
+                <option value="southeastasia">Southeast Asia</option>
+              </select>
+              
+              <label for="azureVoice">Amharic Voice:</label>
+              <select id="azureVoice" class="form-control">
+                <option value="am-ET-MekdesNeural">Mekdes (Female)</option>
+                <option value="am-ET-AmehaNeural">Ameha (Male)</option>
+              </select>
+              
+              <small class="help-text">
+                Get your free Azure API key from <a href="https://azure.microsoft.com/services/cognitive-services/speech-services/" target="_blank">Azure Speech Services</a>
+              </small>
+            </div>
+
+            <div class="setting-group" id="googleSettings" style="display: none;">
+              <label for="googleApiKey">Google Cloud API Key:</label>
+              <input type="password" id="googleApiKey" class="form-control" placeholder="Enter your Google Cloud TTS API key">
+              <small class="help-text">
+                Get your API key from <a href="https://cloud.google.com/text-to-speech" target="_blank">Google Cloud TTS</a>
+              </small>
+            </div>
+
+            <div class="setting-group">
+              <label>Voice Quality:</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="quality" value="standard" checked>
+                  <span>Standard (Faster)</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="quality" value="premium">
+                  <span>Premium (Better Quality)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="setting-actions">
+              <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+              <button class="btn btn-secondary" id="testVoice">Test Voice</button>
+              <button class="btn btn-secondary" id="resetSettings">Reset to Default</button>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -584,6 +802,15 @@
         this.currentUtterance = null;
         this.isProcessing = false;
         this.isSpeaking = false;
+        this.settings = {
+          ttsProvider: 'browser',
+          azureApiKey: '',
+          azureRegion: 'eastus',
+          azureVoice: 'am-ET-MekdesNeural',
+          googleApiKey: '',
+          voiceQuality: 'standard'
+        };
+        this.loadSettings();
       }
 
       initializeElements() {
@@ -602,27 +829,46 @@
         this.stopBtn = document.getElementById('stopBtn');
         this.volumeSlider = document.getElementById('volumeSlider');
         this.alertContainer = document.getElementById('alertContainer');
+        this.settingsBtn = document.getElementById('settingsBtn');
+        this.settingsPanel = document.getElementById('settingsPanel');
+        this.closeSettings = document.getElementById('closeSettings');
+        this.ttsProvider = document.getElementById('ttsProvider');
+        this.azureApiKeyInput = document.getElementById('azureApiKey');
+        this.azureRegionSelect = document.getElementById('azureRegion');
+        this.azureVoiceSelect = document.getElementById('azureVoice');
+        this.googleApiKeyInput = document.getElementById('googleApiKey');
+        this.saveSettingsBtn = document.getElementById('saveSettings');
+        this.testVoiceBtn = document.getElementById('testVoice');
+        this.resetSettingsBtn = document.getElementById('resetSettings');
       }
 
       initializeEventListeners() {
-        // File upload events
+        // PDF processing
         this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
         this.uploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
         this.uploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
-
-        // Button events
+        
         this.processBtn.addEventListener('click', () => this.processPDF());
         this.clearBtn.addEventListener('click', () => this.clearAll());
         this.speakBtn.addEventListener('click', () => this.toggleSpeech());
         this.stopBtn.addEventListener('click', () => this.stopSpeech());
+        this.settingsBtn.addEventListener('click', () => this.toggleSettings());
+        this.closeSettings.addEventListener('click', () => this.toggleSettings());
+        this.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+        this.testVoiceBtn.addEventListener('click', () => this.testVoice());
+        this.resetSettingsBtn.addEventListener('click', () => this.resetSettings());
+        this.ttsProvider.addEventListener('change', () => this.updateTTSProvider());
 
         // Volume control
         this.volumeSlider.addEventListener('input', (e) => this.updateVolume(e));
 
-        // Speech synthesis events
+        // Speech synthesis setup
         if ('speechSynthesis' in window) {
           speechSynthesis.addEventListener('voiceschanged', () => this.loadVoices());
+          this.loadVoices();
+        } else {
+          this.showAlert('Speech synthesis not supported in this browser.', 'error');
         }
       }
 
@@ -763,16 +1009,22 @@
         }
       }
 
-      startSpeech() {
-        if (!this.pdfText.trim()) {
-          this.showAlert('No text available to read. Please process a PDF first.', 'warning');
+      startSpeech(text = null) {
+        if (this.isSpeaking) {
+          this.pauseSpeech();
+          return;
+        }
+
+        const textToSpeak = text || this.pdfText;
+        if (!textToSpeak || textToSpeak.trim() === '') {
+          this.showAlert('No text available for speech synthesis.', 'warning');
           return;
         }
 
         // Stop any existing speech
         speechSynthesis.cancel();
 
-        this.currentUtterance = new SpeechSynthesisUtterance(this.pdfText);
+        this.currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
         this.currentUtterance.lang = 'am-ET'; // Amharic locale
         this.currentUtterance.rate = 0.9;
         this.currentUtterance.pitch = 1;
@@ -780,20 +1032,41 @@
 
         // Try to find an Amharic voice
         const voices = speechSynthesis.getVoices();
+        console.log('All available voices:', voices.map(v => ({ name: v.name, lang: v.lang, localService: v.localService })));
+        
+        // Enhanced Amharic voice detection
         const amharicVoice = voices.find(voice => 
-          voice.lang.includes('am') || voice.lang.includes('AM')
+          voice.lang.includes('am') || 
+          voice.lang.includes('AM') ||
+          voice.lang === 'am-ET' ||
+          voice.name.toLowerCase().includes('amharic') ||
+          voice.name.toLowerCase().includes('ethiopia')
         );
         
+        // Log voice selection for debugging
         if (amharicVoice) {
+          console.log('Found Amharic voice:', amharicVoice.name, amharicVoice.lang);
           this.currentUtterance.voice = amharicVoice;
+          this.showAlert(`Using Amharic voice: ${amharicVoice.name}`, 'success');
         } else {
-          // Fallback to a suitable voice
-          const fallbackVoice = voices.find(voice => 
-            voice.lang.includes('en') && voice.name.includes('Female')
-          ) || voices[0];
+          console.log('No Amharic voice found. Available voices:', voices.length);
+          
+          // Try to use Azure Cognitive Services or Google Cloud TTS as fallback
+          if (this.shouldUseCloudTTS()) {
+            this.speakWithCloudTTS(textToSpeak);
+            return;
+          }
+          
+          // Enhanced fallback voice selection
+          const fallbackVoice = this.selectBestFallbackVoice(voices);
           
           if (fallbackVoice) {
             this.currentUtterance.voice = fallbackVoice;
+            console.log('Using fallback voice:', fallbackVoice.name, fallbackVoice.lang);
+            this.showAlert(`No Amharic voice available. Using ${fallbackVoice.name} as fallback. For better Amharic pronunciation, consider using cloud TTS services.`, 'warning');
+          } else {
+            this.showAlert('No suitable voice found for speech synthesis.', 'error');
+            return;
           }
         }
 
@@ -857,6 +1130,139 @@
         // This ensures voices are loaded for better voice selection
         const voices = speechSynthesis.getVoices();
         console.log('Available voices:', voices.length);
+      }
+
+      // Helper method to determine if cloud TTS should be used
+      shouldUseCloudTTS() {
+        // Use current settings instead of localStorage directly
+        return this.settings.ttsProvider === 'azure' || this.settings.ttsProvider === 'google';
+      }
+
+      // Enhanced fallback voice selection
+      selectBestFallbackVoice(voices) {
+        // Priority order for fallback voices
+        const priorities = [
+          // Try voices that might handle Unicode text better
+          v => v.lang.includes('ar') && v.name.toLowerCase().includes('female'), // Arabic (similar script)
+          v => v.lang.includes('he') && v.name.toLowerCase().includes('female'), // Hebrew (RTL language)
+          v => v.lang.includes('ur') && v.name.toLowerCase().includes('female'), // Urdu (similar script)
+          v => v.lang.includes('fa') && v.name.toLowerCase().includes('female'), // Persian (similar script)
+          v => v.lang.includes('en') && v.name.toLowerCase().includes('female'), // English female
+          v => v.lang.includes('en') && v.name.toLowerCase().includes('male'),   // English male
+          v => v.lang.includes('en'),                                             // Any English
+          v => v.localService === true,                                           // Local voices
+          v => true                                                               // Any voice
+        ];
+
+        for (const priority of priorities) {
+          const voice = voices.find(priority);
+          if (voice) return voice;
+        }
+        
+        return voices[0]; // Last resort
+      }
+
+      // Cloud TTS integration using Azure Cognitive Services
+      async speakWithCloudTTS(text) {
+        const azureApiKey = this.settings.azureApiKey || localStorage.getItem('azureApiKey');
+        const azureRegion = this.settings.azureRegion || localStorage.getItem('azureRegion') || 'eastus';
+        const azureVoice = this.settings.azureVoice || localStorage.getItem('azureVoice') || 'am-ET-MekdesNeural';
+        
+        if (!azureApiKey) {
+          this.showAlert('Azure API key not configured. Please add your API key in TTS settings.', 'error');
+          return;
+        }
+
+        try {
+          this.showAlert('Generating Amharic audio using Azure TTS...', 'info');
+          
+          // Get access token
+          const tokenResponse = await fetch(`https://${azureRegion}.api.cognitive.microsoft.com/sts/v1.0/issueToken`, {
+            method: 'POST',
+            headers: {
+              'Ocp-Apim-Subscription-Key': azureApiKey,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: ''
+          });
+
+          if (!tokenResponse.ok) {
+            throw new Error('Failed to get Azure access token');
+          }
+
+          const accessToken = await tokenResponse.text();
+
+          // SSML for Amharic speech
+          const ssml = `
+            <speak version='1.0' xml:lang='am-ET'>
+              <voice xml:lang='am-ET' xml:gender='Female' name='${azureVoice}'>
+                ${text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+              </voice>
+            </speak>
+          `;
+
+          // Generate speech
+          const ttsResponse = await fetch(`https://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/ssml+xml',
+              'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
+            },
+            body: ssml
+          });
+
+          if (!ttsResponse.ok) {
+            throw new Error('Failed to generate speech with Azure TTS');
+          }
+
+          const audioBlob = await ttsResponse.blob();
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          // Play the generated audio
+          this.playCloudAudio(audioUrl);
+          
+        } catch (error) {
+          console.error('Azure TTS error:', error);
+          this.showAlert(`Cloud TTS failed: ${error.message}. Falling back to browser TTS.`, 'error');
+          this.speakWithBrowserTTS(text);
+        }
+      }
+
+      // Play cloud-generated audio
+      playCloudAudio(audioUrl) {
+        if (this.cloudAudio) {
+          this.cloudAudio.pause();
+          URL.revokeObjectURL(this.cloudAudio.src);
+        }
+
+        this.cloudAudio = new Audio(audioUrl);
+        this.cloudAudio.onloadstart = () => {
+          this.isSpeaking = true;
+          this.updateSpeechButtons(true);
+          this.showAlert('Playing Amharic audio from Azure TTS', 'success');
+        };
+        
+        this.cloudAudio.onended = () => {
+          this.isSpeaking = false;
+          this.updateSpeechButtons(false);
+          URL.revokeObjectURL(audioUrl);
+        };
+        
+        this.cloudAudio.onerror = () => {
+          this.isSpeaking = false;
+          this.updateSpeechButtons(false);
+          this.showAlert('Error playing cloud audio', 'error');
+          URL.revokeObjectURL(audioUrl);
+        };
+
+        this.cloudAudio.play();
+      }
+
+      // Fallback to browser TTS
+      speakWithBrowserTTS(text) {
+        // Original browser TTS logic (current implementation)
+        this.startSpeech(text);
       }
 
       clearAll() {
@@ -945,6 +1351,87 @@
 
       clearAlert() {
         this.alertContainer.innerHTML = '';
+      }
+
+      toggleSettings() {
+        this.settingsPanel.style.display = this.settingsPanel.style.display === 'none' ? 'block' : 'none';
+      }
+
+      loadSettings() {
+        // Load settings from localStorage and update form elements
+        this.settings.ttsProvider = localStorage.getItem('ttsProvider') || 'browser';
+        this.settings.azureApiKey = localStorage.getItem('azureApiKey') || '';
+        this.settings.azureRegion = localStorage.getItem('azureRegion') || 'eastus';
+        this.settings.azureVoice = localStorage.getItem('azureVoice') || 'am-ET-MekdesNeural';
+        this.settings.googleApiKey = localStorage.getItem('googleApiKey') || '';
+        
+        // Update form elements
+        this.ttsProvider.value = this.settings.ttsProvider;
+        this.azureApiKeyInput.value = this.settings.azureApiKey;
+        this.azureRegionSelect.value = this.settings.azureRegion;
+        this.azureVoiceSelect.value = this.settings.azureVoice;
+        this.googleApiKeyInput.value = this.settings.googleApiKey;
+        this.volumeSlider.value = localStorage.getItem('volume') || '1';
+        
+        this.updateTTSProvider();
+      }
+
+      saveSettings() {
+        this.settings.ttsProvider = this.ttsProvider.value;
+        this.settings.azureApiKey = this.azureApiKeyInput.value;
+        this.settings.azureRegion = this.azureRegionSelect.value;
+        this.settings.azureVoice = this.azureVoiceSelect.value;
+        this.settings.googleApiKey = this.googleApiKeyInput.value;
+        this.settings.voiceQuality = this.ttsProvider.value === 'azure' || this.ttsProvider.value === 'google' ? 'premium' : 'standard';
+
+        localStorage.setItem('ttsProvider', this.settings.ttsProvider);
+        localStorage.setItem('azureApiKey', this.settings.azureApiKey);
+        localStorage.setItem('azureRegion', this.settings.azureRegion);
+        localStorage.setItem('azureVoice', this.settings.azureVoice);
+        localStorage.setItem('googleApiKey', this.settings.googleApiKey);
+        localStorage.setItem('volume', this.volumeSlider.value);
+
+        this.showAlert('Settings saved successfully!', 'success');
+        this.updateTTSProvider();
+      }
+
+      updateTTSProvider() {
+        const provider = this.ttsProvider.value;
+        this.settings.ttsProvider = provider;
+        
+        const azureSettings = document.getElementById('azureSettings');
+        const googleSettings = document.getElementById('googleSettings');
+
+        // Show/hide relevant settings based on provider
+        if (provider === 'azure') {
+          azureSettings.style.display = 'block';
+          googleSettings.style.display = 'none';
+        } else if (provider === 'google') {
+          azureSettings.style.display = 'none';
+          googleSettings.style.display = 'block';
+        } else {
+          azureSettings.style.display = 'none';
+          googleSettings.style.display = 'none';
+        }
+      }
+
+      testVoice() {
+        const text = 'ሰላም እንዴት ነህ?'; // A simple Amharic test phrase
+        this.startSpeech(text); // Pass text to startSpeech
+        this.showAlert('Testing voice...', 'info');
+      }
+
+      resetSettings() {
+        this.settings = {
+          ttsProvider: 'browser',
+          azureApiKey: '',
+          azureRegion: 'eastus',
+          azureVoice: 'am-ET-MekdesNeural',
+          googleApiKey: '',
+          voiceQuality: 'standard'
+        };
+        this.loadSettings();
+        this.showAlert('Settings reset to default.', 'warning');
       }
     }
 
